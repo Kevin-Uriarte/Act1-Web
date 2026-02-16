@@ -1,6 +1,50 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qsl, urlparse
 
+contenido = {
+    "/": """
+    <html>
+        <body>
+            <h1>Home</h1>
+            <ul>
+                <li><a href="/proyecto/web-uno">Web Uno</a></li>
+                <li><a href="/proyecto/web-dos">Web Dos</a></li>
+                <li><a href="/proyecto/web-tres">Web Tres</a></li>
+            </ul>
+        </body>
+    </html>
+    """,
+
+    "/proyecto/web-uno": """
+    <html>
+        <body>
+            <h1>Proyecto: web-uno</h1>
+            <p>Primer proyecto</p>
+            <a href="/">Regresar</a>
+        </body>
+    </html>
+    """,
+
+    "/proyecto/web-dos": """
+    <html>
+        <body>
+            <h1>Proyecto: web-dos</h1>
+            <p>Segundo proyecto</p>
+            <a href="/">Regresar</a>
+        </body>
+    </html>
+    """,
+
+    "/proyecto/web-tres": """
+    <html>
+        <body>
+            <h1>Proyecto: web-tres</h1>
+            <p>Tercer proyecto</p>
+            <a href="/">Regresar</a>
+        </body>
+    </html>
+    """
+}
 
 class WebRequestHandler(BaseHTTPRequestHandler):
     def url(self):
@@ -28,15 +72,15 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         ruta = self.url().path
         query = self.query_data()
 
+        if ruta in contenido:
+            return contenido[ruta]
+
         if ruta.startswith("/proyecto/"):
             proyecto = ruta.split("/")[-1]
             autor = query.get("autor","desconocido")
 
             return f"<h1>Proyecto: {proyecto} Autor: {autor}</h1>"
-        # home page
-        if ruta == "/":
-            with open ("home.html","r",encoding="utf-8") as archivo:
-                return archivo.read()
+        
         return None
     pass     
 
